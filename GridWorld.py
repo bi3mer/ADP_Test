@@ -9,32 +9,41 @@ class GridWorld:
         self.MAX_Y = 3
         self.MAX_X = 4
 
+        self.STATES = [Position(x, y) for y in range(self.MAX_Y) for x in range(self.MAX_X)]
+
+    def new(self):
+        self.state = Position(0,0)
+
     def next_states(self):
         states = []
 
         # up
         new_y = self.state.y + 1
         if new_y < self.MAX_Y:
-            if not (self.state.x == self.EMPTY.x and new_y == self.EMPTY.y):
-                states.append(Position(self.state.x, new_y))
+            new_pos = Position(self.state.x, new_y)
+            if new_pos != self.EMPTY:
+                states.append(new_pos)
 
         # down
         new_y = self.state.y - 1
-        if new_y - 1 >= 0:
-            if not (self.state.x == self.EMPTY.x and new_y == self.EMPTY.y):
-                states.append(Position(self.state.x, new_y))
+        if new_y >= 0:
+            new_pos = Position(self.state.x, new_y)
+            if new_pos != self.EMPTY:
+                states.append(new_pos)
 
         # right
         new_x = self.state.x + 1
-        if new_x + 1 < self.MAX_X:
-            if not (new_x == self.EMPTY.x and self.state.x == self.EMPTY.y):
-                states.append(Position(new_x, self.state.y))
+        if new_x < self.MAX_X:
+            new_pos = Position(new_x, self.state.y)
+            if new_pos != self.EMPTY:
+                states.append(new_pos)
 
         # left
         new_x = self.state.x - 1
-        if new_x - 1 >= 0:
-            if not (new_x == self.EMPTY.x and self.state.x == self.EMPTY.y):
-                states.append(Position(new_x, self.state.y))
+        if new_x  >= 0:
+            new_pos = Position(new_x, self.state.y)
+            if new_pos != self.EMPTY:
+                states.append(new_pos)
 
         return states
 
@@ -67,4 +76,15 @@ class GridWorld:
             
             print(out)
             print('-----------------')
+
+    def display_utility(self, rl):
+        print('-----------------------------')
+        for y in reversed(range(self.MAX_Y)):
+            out = '| '
+            for x in range(self.MAX_X):
+                cur_state = Position(x, y)
+                out +=  '{:.2f} | '.format(rl.u(cur_state))
+            
+            print(out)
+            print('-----------------------------')
             
