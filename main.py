@@ -1,27 +1,18 @@
-from GridWorld import GridWorld
-from RL import DirectUtilityEstimation
-from math import inf
+from email.policy import Policy
+from tkinter import Grid
+import GridWorld
+from RL import *
 
-g = GridWorld()
-rl = DirectUtilityEstimation(g)
+rl = DirectUtilityEstimation(GridWorld.S, GridWorld.A, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
 rl.train(100_000)
 
-g.display_utility(rl)
+GridWorld.display_utility(rl)
 
 input()
 
-g.new()
-g.display()
-while g.reward() == 0:
-    print('\n\n')
-    best_s = None
-    best_u = -inf
-    for s in g.next_states():
-        next_u = rl.u(s)
-        if next_u > best_u:
-            best_u = next_u
-            best_s = s
+states, r = rl.play_through(eps=0.0)
+for s in states:
+    GridWorld.display(s)
+    print()
 
-    g.state = best_s
-    g.display()
-    print(best_s, best_u)
+print(f'r={r}, reward={GridWorld.R[s]}')

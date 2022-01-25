@@ -1,90 +1,85 @@
-from Utility import Position
+from Utility import Position, add_pos
+from enum import Enum
 
-class GridWorld:
-    def __init__(self):
-        self.state = Position(0,0)
-        self.LOSE_STATE = Position(3,1)
-        self.WIN_STATE = Position(3,2)
-        self.EMPTY = Position(1,1)
-        self.MAX_Y = 3
-        self.MAX_X = 4
+class Action(Enum):
+    LEFT = 0
+    RIGHT = 1
+    UP = 2
+    DOWN = 3
 
-        self.STATES = [Position(x, y) for y in range(self.MAX_Y) for x in range(self.MAX_X)]
+def action_to_tuple(action):
+    if action == Action.LEFT:
+        return Position(-1, 0)
+    elif action == Action.RIGHT:
+        return Position(1,0)
+    elif action == Action.UP:
+        return Position(0,1)
+    elif action == Action.DOWN:
+        return Position(0,-1)
+    
+    raise ValueError(f'Unregistered action type: {action}')
 
-    def new(self):
-        self.state = Position(0,0)
+MAX_X = 4
+MAX_Y = 3
+BLANK_STATE = Position(1,1)
+START = Position(0,0)   
 
-    def next_states(self):
-        states = []
+S = [Position(x, y) for y in range(3) for x in range(4)]
+A = [Action.LEFT, Action.RIGHT, Action.UP, Action.DOWN]
+P = {}
+R = {}
 
-        # up
-        new_y = self.state.y + 1
-        if new_y < self.MAX_Y:
-            new_pos = Position(self.state.x, new_y)
-            if new_pos != self.EMPTY:
-                states.append(new_pos)
+for s in S:
+    # slight movement penalty
+    R[s] = -0.04 
 
-        # down
-        new_y = self.state.y - 1
-        if new_y >= 0:
-            new_pos = Position(self.state.x, new_y)
-            if new_pos != self.EMPTY:
-                states.append(new_pos)
+    # probability for actions
+    P[s] = {}
+    for a in A:
+        new_s = add_pos(s, action_to_tuple(a))  
 
-        # right
-        new_x = self.state.x + 1
-        if new_x < self.MAX_X:
-            new_pos = Position(new_x, self.state.y)
-            if new_pos != self.EMPTY:
-                states.append(new_pos)
-
-        # left
-        new_x = self.state.x - 1
-        if new_x  >= 0:
-            new_pos = Position(new_x, self.state.y)
-            if new_pos != self.EMPTY:
-                states.append(new_pos)
-
-        return states
-
-    def reward(self):
-        if self.state == self.LOSE_STATE:
-            return -1
-        elif self.state == self.WIN_STATE:
-            return 1
+        if new_s != BLANK_STATE and new_s.x >= 0 and new_s.x < MAX_X and new_s.y >= 0 and new_s.y < MAX_Y:
+            P[s][new_s] = 1
         else:
-            return 0
+            P[s][new_s] = 0
 
-    def display(self):
+WIN_STATE = Position(3,2)
+LOSE_STATE = Position(3,1)
+R[Position(3,1)] = -1
+R[Position(3,2)] = 1
+
+E = [Position(3,1), Position(3,2)] # End states
+
+def display(s):
+    print('-----------------')
+    for y in reversed(range(MAX_Y)):
+        out = '| '
+        for x in range(MAX_X):
+            cur_state = Position(x, y)
+            if s == cur_state:
+                out += '@'
+            elif cur_state == LOSE_STATE:
+                out += 'L'
+            elif cur_state == WIN_STATE:
+                out += 'W'
+            elif cur_state == BLANK_STATE:
+                out += 'X'
+            else:
+                out += ' '
+
+            out += ' | '
+        
+        print(out)
         print('-----------------')
-        for y in reversed(range(self.MAX_Y)):
-            out = '| '
-            for x in range(self.MAX_X):
-                cur_state = Position(x, y)
-                if self.state == cur_state:
-                    out += '@'
-                elif cur_state == self.LOSE_STATE:
-                    out += 'L'
-                elif cur_state == self.WIN_STATE:
-                    out += 'W'
-                elif cur_state == self.EMPTY:
-                    out += 'X'
-                else:
-                    out += ' '
 
-                out += ' | '
-            
-            print(out)
-            print('-----------------')
-
-    def display_utility(self, rl):
+def display_utility(rl):
+    print('-----------------------------')
+    for y in reversed(range(MAX_Y)):
+        out = '| '
+        for x in range(MAX_X):
+            cur_state = Position(x, y)
+            out +=  '{:.2f} | '.format(rl.u(cur_state))
+        
+        print(out)
         print('-----------------------------')
-        for y in reversed(range(self.MAX_Y)):
-            out = '| '
-            for x in range(self.MAX_X):
-                cur_state = Position(x, y)
-                out +=  '{:.2f} | '.format(rl.u(cur_state))
-            
-            print(out)
-            print('-----------------------------')
             
