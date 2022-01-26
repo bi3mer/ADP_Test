@@ -21,4 +21,3 @@ class ValueIteration(MDP):
                 print(f'Stopped after {i} iterations')
                 break
         
-        print(delta)
