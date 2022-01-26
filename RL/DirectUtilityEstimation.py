@@ -4,8 +4,8 @@ from Utility import Average
 from tqdm import trange
 
 class DirectUtilityEstimation(MDP):
-    def __init__(self, S, A, P, R, E, START):
-        super().__init__(S, A, P, R, E, START)
+    def __init__(self, S, P, R, E, START):
+        super().__init__(S, P, R, E, START, True)
 
     def train(self, max_iterations):
         for _ in trange(max_iterations):

@@ -3,8 +3,8 @@ from tkinter import Grid
 import GridWorld
 from RL import *
 
-rl = DirectUtilityEstimation(GridWorld.S, GridWorld.A, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
-rl.train(100_000)
+rl = ValueIteration(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START, 0.03)
+rl.train(10_000)
 
 GridWorld.display_utility(rl)
 
