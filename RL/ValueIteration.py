@@ -13,7 +13,7 @@ class ValueIteration(MDP):
             delta = 0
 
             for s in self.S:
-                new_u[s] = self.R[s] + GAMMA * max([self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s] if self.P[s][next_s] > 0])
+                new_u[s] = self.R[s] + GAMMA * max([self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s]])
                 delta = max(delta, abs(self.utility[s] - new_u[s]))
 
             self.utility = new_u

@@ -31,7 +31,7 @@ R = {}
 
 for s in S:
     # slight movement penalty
-    R[s] = -0.04 
+    R[s] = -0.05
 
     # probability for actions
     P[s] = {}
@@ -40,8 +40,6 @@ for s in S:
 
         if new_s != BLANK_STATE and new_s.x >= 0 and new_s.x < MAX_X and new_s.y >= 0 and new_s.y < MAX_Y:
             P[s][new_s] = 1
-        else:
-            P[s][new_s] = 0
 
 WIN_STATE = Position(3,2)
 LOSE_STATE = Position(3,1)

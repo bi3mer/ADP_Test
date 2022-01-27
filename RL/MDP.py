@@ -37,7 +37,7 @@ class MDP:
             best_s = None
             best_u = -inf
 
-            valid_choices = [new_s for new_s in self.P[s] if self.P[s][new_s] > 0]
+            valid_choices = [new_s for new_s in self.P[s]]
 
             if random() < eps:
                 best_s = choice(valid_choices)
