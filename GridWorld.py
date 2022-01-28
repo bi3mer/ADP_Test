@@ -31,12 +31,12 @@ def action_to_tuple(action):
     
     raise ValueError(f'Unregistered action type: {action}')
 
-MAX_X = 4
-MAX_Y = 3
+MAX_X = 5
+MAX_Y = 5
 BLANK_STATE = Position(1,1)
 START = Position(0,0)   
 
-S = [Position(x, y) for y in range(3) for x in range(4)]
+S = [Position(x, y) for y in range(MAX_Y) for x in range(MAX_X)]
 A = [Action.LEFT, Action.RIGHT, Action.UP, Action.DOWN]
 P = {}
 R = {}
@@ -53,15 +53,15 @@ for s in S:
         if new_s != BLANK_STATE and new_s.x >= 0 and new_s.x < MAX_X and new_s.y >= 0 and new_s.y < MAX_Y:
             P[s][new_s] = 1
 
-WIN_STATE = Position(3,2)
-LOSE_STATE = Position(3,1)
-R[Position(3,1)] = -1
-R[Position(3,2)] = 1
+WIN_STATE = Position(MAX_X-1,MAX_Y-1)
+LOSE_STATE = Position(MAX_X-1,MAX_Y-2)
+R[LOSE_STATE] = -1
+R[WIN_STATE] = 1
 
-E = [Position(3,1), Position(3,2)] # End states
+E = [LOSE_STATE, WIN_STATE] # End states
 
 def display(s):
-    print('-----------------')
+    print('----' * MAX_X + '-')
     for y in reversed(range(MAX_Y)):
         out = '| '
         for x in range(MAX_X):
@@ -80,10 +80,10 @@ def display(s):
             out += ' | '
         
         print(out)
-        print('-----------------')
+        print('----' * MAX_X + '-')
 
 def display_utility(rl):
-    print('-----------------------------')
+    print('--------' * MAX_X + '-')
     for y in reversed(range(MAX_Y)):
         out = '| '
         for x in range(MAX_X):
@@ -91,7 +91,8 @@ def display_utility(rl):
             out +=  '{:.2f} | '.format(rl.u(cur_state))
         
         print(out)
-        print('-----------------------------')
+        print('--------' * MAX_X + '-')
+
 
 def display_policy(rl):
     try:
@@ -100,7 +101,7 @@ def display_policy(rl):
         print(f'{rl} does not have a policy associated with it.')
         return
 
-    print('---------------------')
+    print('-----' * MAX_X + '-')
     for y in reversed(range(MAX_Y)):
         out = '| '
         for x in range(MAX_X):
@@ -122,4 +123,4 @@ def display_policy(rl):
             out = f'{out} {a} | '
         
         print(out)
-        print('---------------------')
+        print('-----' * MAX_X + '-')
