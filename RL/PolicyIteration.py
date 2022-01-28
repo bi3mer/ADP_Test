@@ -21,16 +21,8 @@ class PolicyIteration(MDP):
         for i in trange(0, max_iterations, ITER):
             # simplified policy evaluation
             for _ in range(ITER):
-                delta = 0
-                # new_u = self.utility.copy()
                 for s in self.S:
-                    W = 1.0 / float(len(self.P[s]))
-                    # new_u[s] = self.R[s] + GAMMA * max([W * self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s]])
-                    prev = self.utility[s]
-                    self.utility[s] = self.R[s] + GAMMA * max([W * self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s]])
-                    delta = max(delta, abs(prev - self.utility[s]))
-
-                # self.utility = new_u
+                    self.utility[s] = self.R[s] + self.P[s][self.pi[s]] * self.utility[self.pi[s]]
 
             # policy improvement
             unchanged = True
@@ -48,7 +40,7 @@ class PolicyIteration(MDP):
                     self.pi[s] = best_s
                     unchanged = False
 
-            if unchanged and delta < self.theta:
+            if unchanged:
                 break
 
         print(f'Stopped after {i} iteration, {delta}')

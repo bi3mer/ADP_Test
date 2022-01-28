@@ -28,10 +28,11 @@ class MDP:
         else:
             return self.utility[state]
 
-    def play_through(self, eps=0.1):
+    def play_through(self, eps=0.1, max_steps=1000):
         states = [self.START]
         s = self.START
         r = 0
+        steps = 0
 
         while s not in self.E:
             best_s = None
@@ -52,5 +53,9 @@ class MDP:
             states.append(best_s)
             s = best_s
             r += self.R[s]
+
+            steps += 1
+            if steps > max_steps:
+                return [], -1000
 
         return states, r
