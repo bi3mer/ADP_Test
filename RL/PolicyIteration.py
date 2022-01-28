@@ -12,23 +12,20 @@ class PolicyIteration(MDP):
         self.pi = {} 
         for s in S:
             self.pi[s] = choice(list(self.P[s].keys()))
-
+            
     def train(self, max_iterations):
-        GAMMA = 0.75
-        for i in trange(max_iterations):
+        GAMMA = 0.9
+        ITER = 2
+        for i in trange(0, max_iterations, ITER):
             # simplified policy evaluation
-            for __ in range(max_iterations - i):
-                delta = 0
+            for _ in range(ITER):
                 new_u = self.utility.copy()
                 for s in self.S:
-                    s_p = self.pi[s]
-                    new_u[s] = self.R[s] + GAMMA * self.P[s][s_p] * self.utility[s_p] 
-                    delta = max(delta, abs(self.utility[s] - new_u[s]))
+                    W = 1.0 / float(len(self.P[s]))
+                    new_u[s] = self.R[s] + GAMMA * sum([W * self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s]])
 
                 self.utility = new_u
-                if delta < self.theta:
-                    break
-            
+
             # policy improvement
             unchanged = True
             for s in self.S:
@@ -37,7 +34,7 @@ class PolicyIteration(MDP):
                 best_s = None
                 best_u = -inf
                 for s_p in self.P[s]:
-                    u = self.R[s] + GAMMA*sum(self.P[s_p][s_p_p]*self.utility[s_p_p] for s_p_p in self.P[s_p])
+                    u = self.R[s] + GAMMA*max(self.P[s_p][s_p_p]*self.utility[s_p_p] for s_p_p in self.P[s_p])
                     if u > best_u:
                         best_s = s_p
                         best_u = u
@@ -46,6 +43,7 @@ class PolicyIteration(MDP):
                     self.pi[s] = best_s
                     unchanged = False
 
-            self.utility = new_u
             if unchanged:
                 break
+
+        print(f'Stopped after {i} iterations')

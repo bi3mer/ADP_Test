@@ -7,6 +7,18 @@ class Action(Enum):
     UP = 2
     DOWN = 3
 
+def action_to_str(action):
+    if action == Action.LEFT:
+        return 'L'
+    elif action == Action.RIGHT:
+        return 'R'
+    elif action == Action.UP:
+        return 'U'
+    elif action == Action.DOWN:
+        return 'D'
+    
+    raise ValueError(f'Unregistered action type: {action}')
+
 def action_to_tuple(action):
     if action == Action.LEFT:
         return Position(-1, 0)
@@ -80,4 +92,34 @@ def display_utility(rl):
         
         print(out)
         print('-----------------------------')
-            
+
+def display_policy(rl):
+    try:
+        pi = rl.pi
+    except:
+        print(f'{rl} does not have a policy associated with it.')
+        return
+
+    print('---------------------')
+    for y in reversed(range(MAX_Y)):
+        out = '| '
+        for x in range(MAX_X):
+            cur_state = Position(x, y)
+            pi_state = pi[cur_state]
+
+            if cur_state.x < pi_state.x:
+                a = 'R'
+            elif cur_state.x > pi_state.x:
+                a = 'L'
+            elif cur_state.y < pi_state.y:
+                a = 'U'
+            elif cur_state.y > pi_state.y:
+                a = 'D'
+            else:
+                print(f'{cur_state} -> {pi_state} is not possible')
+                a = '?'
+
+            out = f'{out} {a} | '
+        
+        print(out)
+        print('---------------------')
