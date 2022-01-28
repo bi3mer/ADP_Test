@@ -15,20 +15,22 @@ class PolicyIteration(MDP):
             
     def train(self, max_iterations):
         GAMMA = 0.75
-        ITER = 9
+        ITER = 20
         delta = 0
 
         for i in trange(0, max_iterations, ITER):
             # simplified policy evaluation
             for _ in range(ITER):
                 delta = 0
-                new_u = self.utility.copy()
+                # new_u = self.utility.copy()
                 for s in self.S:
                     W = 1.0 / float(len(self.P[s]))
-                    new_u[s] = self.R[s] + GAMMA * max([W * self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s]])
-                    delta = max(delta, abs(self.utility[s] - new_u[s]))
+                    # new_u[s] = self.R[s] + GAMMA * max([W * self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s]])
+                    prev = self.utility[s]
+                    self.utility[s] = self.R[s] + GAMMA * max([W * self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s]])
+                    delta = max(delta, abs(prev - self.utility[s]))
 
-                self.utility = new_u
+                # self.utility = new_u
 
             # policy improvement
             unchanged = True
