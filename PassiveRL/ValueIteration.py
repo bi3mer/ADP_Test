@@ -9,14 +9,14 @@ class ValueIteration(MDP):
     def train(self, max_iterations):
         GAMMA = 0.75
         for i in trange(max_iterations):
-            new_u = self.utility.copy()
+            new_u = self.U.copy()
             delta = 0
 
             for s in self.S:
-                new_u[s] = self.R[s] + GAMMA * max([self.P[s][next_s] * self.utility[next_s] for next_s in self.P[s]])
-                delta = max(delta, abs(self.utility[s] - new_u[s]))
+                new_u[s] = self.R[s] + GAMMA * max([self.P[s][next_s] * self.U[next_s] for next_s in self.P[s]])
+                delta = max(delta, abs(self.U[s] - new_u[s]))
 
-            self.utility = new_u
+            self.U = new_u
             if delta < self.theta:
                 print(f'Stopped after {i} iterations')
                 break

@@ -11,6 +11,6 @@ class DirectUtilityEstimation(MDP):
         for _ in trange(max_iterations):
             states, reward = self.play_through()
             for s in states:
-                val = self.utility[s]
-                self.utility[s] = Average(val.num + reward, val.div + 1)
+                val = self.U[s]
+                self.U[s] = Average(val.num + reward, val.div + 1)
                 

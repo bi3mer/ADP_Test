@@ -22,7 +22,7 @@ class PolicyIteration(MDP):
             # simplified policy evaluation
             for _ in range(ITER):
                 for s in self.S:
-                    self.utility[s] = self.R[s] + self.P[s][self.pi[s]] * self.utility[self.pi[s]]
+                    self.U[s] = self.R[s] + self.P[s][self.pi[s]] * self.U[self.pi[s]]
 
             # policy improvement
             unchanged = True
@@ -32,9 +32,9 @@ class PolicyIteration(MDP):
                 best_s = None
                 best_u = -inf
                 for s_p in self.P[s]:
-                    if self.utility[s_p] > best_u:
+                    if self.U[s_p] > best_u:
                         best_s = s_p
-                        best_u = self.utility[s_p]
+                        best_u = self.U[s_p]
 
                 if old != best_s:
                     self.pi[s] = best_s
