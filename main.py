@@ -7,7 +7,7 @@ from time import time
 # rl = ValueIteration(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START, 1e-10)
 rl = TemporalDifference(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
 start = time()
-rl.train(100)
+rl.train(1_000)
 end = time()
 
 print('\n')

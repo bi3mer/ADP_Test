@@ -29,7 +29,6 @@ class MDP:
             return self.U[state]
 
     def play_through(self, eps=0.1, max_steps=1000):
-        print('=====================')
         states = [self.START]
         r = [0]
 
@@ -37,18 +36,15 @@ class MDP:
         steps = 0
 
         while s not in self.E:
-            print(s, len(self.P))
             best_s = None
             best_u = -inf
 
             valid_choices = [new_s for new_s in self.P[s]]
 
             if random() < eps:
-                print(1)
                 best_s = choice(valid_choices)
                 best_u = self.u(best_s)
             else:
-                print(2, best_u, [self.u(sss) for sss in valid_choices])
                 for new_s in valid_choices:
                     next_u = self.u(new_s)
                     if next_u > best_u:
