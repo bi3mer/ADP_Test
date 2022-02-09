@@ -9,6 +9,7 @@ class MDP:
         self.R = R
         self.E = E
         self.START = START
+        self.pos = START
         self.U = {}
         self.use_avg = use_avg
 
@@ -62,6 +63,27 @@ class MDP:
         states.append(s)
         r.append(self.R[s])
 
-        print('------------')
-
         return states, r
+
+    def reset(self):
+        self.pos = self.START
+
+    def next(self, new_state):
+        self.pos = new_state
+        return self.R[new_state]
+
+    def get_next(self, eps=0.05):
+        valid_choices = [new_s for new_s in self.P[self.pos]]
+        best_s = None
+        best_q = -inf
+        if random() < eps:
+            best_s = choice(valid_choices)
+            best_q = self.U[best_s]
+        else:
+            for new_s in valid_choices:
+                next_q = self.U[new_s]
+                if next_q > best_q:
+                    best_q = next_q
+                    best_s = new_s
+
+        return best_s

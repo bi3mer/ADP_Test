@@ -22,7 +22,7 @@ class PolicyIteration(MDP):
             # simplified policy evaluation
             for _ in range(ITER):
                 for s in self.S:
-                    self.U[s] = self.R[s] + self.P[s][self.pi[s]] * self.U[self.pi[s]]
+                    self.U[s] = self.R[s] + GAMMA*self.P[s][self.pi[s]] * self.U[self.pi[s]]
 
             # policy improvement
             unchanged = True

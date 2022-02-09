@@ -31,8 +31,8 @@ def action_to_tuple(action):
     
     raise ValueError(f'Unregistered action type: {action}')
 
-MAX_X = 5
-MAX_Y = 5
+MAX_X = 4
+MAX_Y = 3
 BLANK_STATE = Position(1,1)
 START = Position(0,0)   
 

@@ -1,13 +1,18 @@
 import GridWorld
-from PassiveRL import *
+import ActiveRL
+import PassiveRL
 from time import time
 
-# rl = DirectUtilityEstimation(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
-# rl = PolicyIteration(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START, 1e-13)
-# rl = ValueIteration(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START, 1e-10)
-rl = TemporalDifference(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
+# rl = PassiveRL.DirectUtilityEstimation(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
+# rl = PassiveRL.PolicyIteration(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START, 1e-13)
+# rl = PassiveRL.ValueIteration(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START, 1e-10)
+# rl = PassiveRL.TemporalDifference(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
+
+# rl = ActiveRL.QLearning(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
+rl = ActiveRL.SARSA(GridWorld.S, GridWorld.P, GridWorld.R, GridWorld.E, GridWorld.START)
+
 start = time()
-rl.train(1_000)
+rl.train(50)
 end = time()
 
 print('\n')
@@ -16,11 +21,14 @@ print('\n')
 GridWorld.display_utility(rl)
 input()
 
-states, r = rl.play_through(eps=0.0, max_steps=GridWorld.MAX_X*GridWorld.MAX_Y)
-for s in states:
-    GridWorld.display(s)
-    print()
+success, states, r = rl.play_through(eps=0.0, max_steps=GridWorld.MAX_X*GridWorld.MAX_Y)
+if success:
+    for s in states:
+        GridWorld.display(s)
+        print()
 
-print(f'reward={GridWorld.R[s]}')
-print(f'r={sum(r)}')
+    print(f'r={sum(r)}')
+else:
+    print('Policy was not able to solve gridworld.')
+    
 print(f'Time elapsed: {end - start}')
